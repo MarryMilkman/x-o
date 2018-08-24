@@ -1,6 +1,6 @@
 #include "Computer.hpp"
 
-Computer::Computer(char c) : _symbol(c)
+Computer::Computer(char c, t_map & map) : _symbol(c), _map(&map)
 {
 }
 
@@ -8,12 +8,12 @@ Computer::~Computer()
 {
 }
 
-void		step()
+void		Computer::step()
 {
-	this->_do_step(1, 2);
+	this->_do_step(3, 3);
 }
 
-void		_do_step(int x, int y)
+void		Computer::_do_step(int x, int y)
 {
-	this->_map[x][y] = this->_symbol;
+	this->_map->vect[x - 1][y - 1] = this->_symbol;
 }

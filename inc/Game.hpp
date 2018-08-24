@@ -14,8 +14,9 @@ public:
 	Player						*player_x;
 	Player						*player_o;
 
-protected:
-	static std::vector<std::string>	_map;
+private:
+	int							_human_first();
+	static t_map				_map;
 };
 
 #endif

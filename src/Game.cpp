@@ -5,31 +5,52 @@
 Game::Game()
 {
 	int			i = 0;
-	Human		*human;
-
-	if (1)//this->_human_first())
+	this->_map.vect.reserve(3);
+	while (i < 3)
+		this->_map.vect[i++] = "...";
+	if (this->_human_first())
 	{
-		this->player_x = new Human('x');
-		this->player_o = new Computer('o');
+		this->player_x = new Human('x', this->_map);
+		this->player_o = new Computer('o', this->_map);
 	}
 	else
 	{
-		this->player_x = new Computer('x');
-		this->player_o = new Human('o');
+		this->player_x = new Computer('x', this->_map);
+		this->player_o = new Human('o', this->_map);
 	}
-	this->_map.reserve(3);
-	while (i < 3)
-		this->_map[i++] = "...";
+	std::cout << std::endl;
 }
 
 Game::~Game()
 {
 }
 
+int	Game::_human_first()
+{
+	std::string	buf;
+
+	while (1)
+	{
+		std::cout << "Enter symbol to play ('x' or 'o')\n";
+		std::getline(std::cin, buf);
+		if (buf[0] == 'x' || buf[0] == 'X')
+			return (1);
+		else if (buf[0] == 'o' || buf[0] == 'O')
+			return (0);
+		else
+		{
+			std::cout << "Error: Invalid symbol.\n";
+			continue;
+		}
+	}
+}
+
 void	Game::dicplay(void) const
 {
-	std::cout << "01234\n";
-	std::cout << "1" << this->_map[0] << std::endl;
-	std::cout << "2" << this->_map[1] << std::endl;
-	std::cout << "3" << this->_map[2] << std::endl;
+	std::cout << "0123\n";
+	std::cout << "1" << this->_map.vect[0] << std::endl;
+	std::cout << "2" << this->_map.vect[1] << std::endl;
+	std::cout << "3" << this->_map.vect[2] << std::endl;
 }
+
+t_map	Game::_map;

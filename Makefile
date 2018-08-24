@@ -7,7 +7,7 @@ SRC_DIR	:= ./src/
 INC_DIR := ./inc/
 
 # Source and object files
-SRC		:= main.cpp Game.cpp Plauer.cpp Human.cpp Computer.cpp
+SRC		:= main.cpp Game.cpp Human.cpp Computer.cpp
 OBJ		:= $(addprefix $(OBJ_DIR), $(SRC:.cpp=.o))
 
 # Header files
