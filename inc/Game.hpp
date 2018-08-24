@@ -3,6 +3,7 @@
 
 # include "game_lib.h"
 # include "Player.hpp"
+# include "Map.hpp"
 
 class Game
 {
@@ -10,13 +11,17 @@ public:
 	Game();
 	~Game();
 
-	void						dicplay() const;
-	Player						*player_x;
-	Player						*player_o;
+	void						play();
 
 private:
+	void						_dicplay() const;
+	void						_enter_sym(int coord[2], char c);
 	int							_human_first();
-	static t_map				_map;
+	void						_check_winer();
+
+	Player						*_player_x;
+	Player						*_player_o;
+	Map							*_map;
 };
 
 #endif

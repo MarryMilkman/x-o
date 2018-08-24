@@ -1,16 +1,18 @@
 #ifndef PLAYER_HPP
 # define PLAYER_HPP
 
+# include "game_lib.h"
+
 class Player
 {
 public:
 	
 	~Player() {}
 
-	virtual void	step() = 0;
+	virtual int						*step() = 0;
 
 private:
-	virtual void	_do_step(int x, int y) = 0;
+	virtual	int						_check_coord(int const *coord) = 0;
 };
 
 #endif

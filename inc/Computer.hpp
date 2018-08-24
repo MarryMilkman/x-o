@@ -8,13 +8,19 @@
 class Computer : public Player
 {
 public:
-	Computer(char c, t_map & map);
+	Computer(char c, Map *map);
 	~Computer();
 	
-	void	step() override;
+	int						*step() override;
 private:
-	void	_do_step(int x, int y) override;
-	char	_symbol;
-	t_map	*_map;
+	int						_check_danger(int *coord);
+	int						_check_win(int *coord);
+	int						_check_coord(int const *coord) override;
+	void					_attack_mod(int *coord);
+	void					_find_first_empty(int *coord);
+
+	char					_symbol;
+	char					_enemy_symbol;
+	Map						*_map;
 };
 #endif

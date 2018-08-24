@@ -3,10 +3,7 @@
 
 # include <iostream>
 # include <vector>
+# include <list>
 
-typedef struct					s_map
-{
-	std::vector<std::string>	vect;
-}								t_map;
 
 #endif
