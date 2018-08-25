@@ -1,5 +1,5 @@
 # Name of the program
-NAME	:= game_x_o
+NAME	:= x_o
 
 # Directories
 OBJ_DIR	:= ./obj/

@@ -4,6 +4,7 @@
 
 int main(void)
 {
+	srand (time(NULL));
 	Game	game;
 
 	game.play();

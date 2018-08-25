@@ -13,19 +13,12 @@ int		*Computer::step()
 {
 	int	*coord = new int[2];
 
-	if (this->_symbol == 'x')
-		this->_attack_mod(coord);
-	else
-	{
-		coord[0] = 1;
-		coord[1] = 0;
-	}
+	this->_logic(coord);
 	return (coord);
 }
 
 int		Computer::_check_coord(int const *coord)
-{
-	std::cout << "gi2\n";					
+{					
 	if (this->_map->arr_str[coord[0]][coord[1]] != '.')
 		return (0);
 	return (1);
@@ -33,18 +26,16 @@ int		Computer::_check_coord(int const *coord)
 
 // algo
 
-void	Computer::_attack_mod(int *coord)
+void	Computer::_logic(int *coord)
 {
 	if (this->_check_win(coord))
 		return ;
 	if (this->_check_danger(coord))
 		return ;
-	if (this->_map->arr_str[1][1] == '.')
-	{
-		coord[0] = 1;
-		coord[1] = 1;
+	if (this->_symbol == 'x' && this->_attack_mod(coord))
+		return;
+	else if (this->_defense_mod(coord))
 		return ;
-	}
 	this->_find_first_empty(coord);
 }
 
@@ -56,7 +47,6 @@ int		Computer::_check_danger(int *coord)
 	char							c;
 	int								change;
 
-	coord[0] = -1;
 	i = 0;
 	c = 0;
 	while (i < 8)
@@ -77,7 +67,7 @@ int		Computer::_check_danger(int *coord)
 			}
 			it++;
 		}
-		if (denger_count >= 2)
+		if (denger_count >= 2 && change)
 			break ;
 		i++;
 	}
@@ -108,8 +98,6 @@ int		Computer::_check_win(int *coord)
 				win_count++;
 			if (c == '.')
 			{
-				std::cout << "ZALUPA: " << coord[0]
-					<< " : " << coord[1] << "\n";
 				change = 1;
 				coord[0] = it->coord[0];
 				coord[1] = it->coord[1];
@@ -125,6 +113,71 @@ int		Computer::_check_win(int *coord)
 	return (0);
 }
 
+int		Computer::_attack_mod(int *coord)
+{
+	int								i;
+	std::list<t_sector>				line;
+	std::list<t_sector>::iterator	it;
+	int								ret_result;
+
+	ret_result = 0;
+	i = -1;
+	while (++i < 4)
+	{
+		if (i == 1 || i == 2)
+			continue;
+		line = this->_map->line[i];
+		if (this->_check_line(line, this->_enemy_symbol))
+			continue;
+		it = line.begin();
+		while (it != line.end())
+		{
+			if (!(it->coord[0] == 1 || it->coord[1] == 1)
+			 && *(it->symbol) == '.' && !ret_result)
+			{
+				coord[0] = it->coord[0];
+				coord[1] = it->coord[1];
+				ret_result = 1;
+			}
+			it++;
+		}
+	}
+	it = this->_map->line[6].begin();
+	it++;
+	if (!ret_result || *(it->symbol) == this->_enemy_symbol)
+	{
+		it++;
+		if (*(it->symbol) == '.')
+		{
+			coord[0] = it->coord[0];
+			coord[1] = it->coord[1];
+			return (1);
+		}
+	}
+	return (ret_result);
+}
+
+int		Computer::_defense_mod(int *coord)
+{
+	int								i;
+	std::list<t_sector>				line;
+	std::list<t_sector>::iterator	it;
+
+	it = this->_map->line[6].begin();
+	it++;
+	if (*(it->symbol) == '.')
+	{
+		coord[0] = it->coord[0];
+		coord[1] = it->coord[1];
+		return (1);
+	}
+	// if (*(it->symbol) == 'o')
+	// {
+
+	// }
+	return (0);
+}
+
 void	Computer::_find_first_empty(int *coord)
 {
 	int	i;
@@ -137,10 +190,23 @@ void	Computer::_find_first_empty(int *coord)
 		while (++j < 3)
 			if (this->_map->arr_str[i][j] == '.')
 			{
-				std::cout << i << j << " tut? \n";
 				coord[0] = i;
 				coord[1] = j;
 				return;
 			}
 	}
+}
+
+int		Computer::_check_line(std::list<t_sector> line, char c)
+{
+	std::list<t_sector>::iterator	it;
+
+	it = line.begin();
+	while (it != line.end())
+	{
+		if (*(it->symbol) == c)
+			return (1);
+		it++;
+	}
+	return (0);
 }
