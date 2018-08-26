@@ -4,6 +4,7 @@
 
 Game::Game()
 {
+	this->_intro();
 	this->_map = new Map();
 	if (this->_human_first())
 	{
@@ -14,66 +15,55 @@ Game::Game()
 	{
 		this->_player_x = new Computer('x', this->_map);
 		this->_player_o = new Human(this->_map);
-	}
-
-	///test////////////////////////////////
-
-
-//	this->_map->arr_str[0][0] = 'x';
-	// this->_map->arr_str[1][1] = 'x';
-	// this->_map->arr_str[2][2] = 'o';
-	// this->_map->arr_str[1][0] = 'x';
-	// this->_map->arr_str[2][0] = 'x';
-	// this->_map->arr_str[0][2] = 'x';
-	// this->_dicplay();
-	// std::list<t_sector>::iterator it;
-	// int	i;
-
-	// i = 0;
-	// while (i < 8)
-	// {
-	// 	std::cout << "line:" << i << " \n";
-	// 	it = (this->_map->line)[i].begin();
-	// 	while (it != (this->_map->line)[i].end())
-	// 	{
-	// 		std::cout << *(it->symbol) << ", coord[0] = ";
-	// 		std::cout << it->coord[0] << ", coord[1] = ";
-	// 		std::cout << it->coord[1] << "\n";
-	// 		it++;
-	// 	}
-	// 	std::cout << std::endl;
-	// 	i++;
-	// }
-	// exit(0);
-
-// 	// end test///////////////////////////////
-	
+	}	
 	std::cout << std::endl;
 }
 
 Game::~Game()
 {
+	delete this->_map;
+	if (this->_player_x->is_human())
+	{
+		delete reinterpret_cast<Human *>(this->_player_o);
+		delete reinterpret_cast<Computer *>(this->_player_x);
+	}
+	else
+	{
+		delete reinterpret_cast<Human *>(this->_player_x);
+		delete reinterpret_cast<Computer *>(this->_player_o);
+	}
 }
 
 void		Game::play()
 {
 	int		*coord;
 
+	this->_dicplay();
 	while (1)
 	{
+		std::cout << "Player X" << std::endl;
 		coord = this->_player_x->step();
 		this->_enter_sym(coord, 'x');
-		std::cout << "Player X" << std::endl;
 		this->_dicplay();
-		this->_check_winer();
-		
+		this->_check_map();
+
+		std::cout << "Player O" << std::endl;
 		coord = this->_player_o->step();
 		this->_enter_sym(coord, 'o');
-		std::cout << "Player O" << std::endl;
 		this->_dicplay();
-		this->_check_winer();
-	//	system("leaks game_x_o");
+		this->_check_map();
 	}
+}
+
+void		Game::_intro()
+{
+	std::cout << "To select a sector, press the corresponding digit:\n";
+	std::cout << "  -------\n";
+	std::cout << "  |7|8|9|\n";
+	std::cout << "  |4|5|6|\n";
+	std::cout << "  |1|2|3|\n";
+	std::cout << "  -------\n";
+	std::cout << "By Odin, by Thor! Use your brain!!!\n";
 }
 
 void		Game::_enter_sym(int coord[2], char c)
@@ -88,15 +78,20 @@ int			Game::_human_first()
 
 	while (1)
 	{
-		std::cout << "Enter symbol to play ('x' or 'o')\n";
+		std::cout << "Choose your Hero ('x' or 'o')\n";
 		std::getline(std::cin, buf);
-		if (buf[0] == 'x' || buf[0] == 'X')
+		if (std::cin.eof())
+		{
+			std::cout << "Nooooooooo\n";
+			exit (0);
+		}
+		if ((buf[0] == 'x' || buf[0] == 'X') && buf.size() == 1)
 			return (1);
-		else if (buf[0] == 'o' || buf[0] == 'O')
+		else if ((buf[0] == 'o' || buf[0] == 'O') && buf.size() == 1)
 			return (0);
 		else
 		{
-			std::cout << "Error: Invalid symbol.\n";
+			std::cout << "There are no such Heroes\n";
 			continue;
 		}
 	}
@@ -104,54 +99,90 @@ int			Game::_human_first()
 
 void	Game::_dicplay() const
 {
-	std::cout << "+\n";
-	std::cout << " " << this->_map->arr_str[0] << std::endl;
-	std::cout << " " << this->_map->arr_str[1] << std::endl;
-	std::cout << " " << this->_map->arr_str[2] << std::endl;
-}
+	static int	cycle = 0;
+	int			i;
 
-void	Game::_check_winer()
-{
-	std::list<t_sector>::iterator	it;
-	int								i;
-	char							c;
-	int								count;
-
+	std::cout << "< Cycle " << cycle << " >\n";
 	i = 0;
-	count = 0;
-	while (i < 8)
+	std::cout << "  -------\n";
+	while (i < 3)
 	{
-		it = (this->_map->line)[i].begin();
-		c = 0;
-		while (it != (this->_map->line)[i].end())
-		{
-			if (*(it->symbol) == '.')
-			{
-				c = 0;
-				count++;
-				break ;
-			}
-			c == 0 ? c = *(it->symbol) : 0;
-			if (c != *(it->symbol))
-			{
-				c = 0;
-				break ;
-			}
-			it++;
-		}
-		if (c)
-		{
-			std::cout << "Congratulation! '" << c << "' won\n";
-			exit (0);
-		}
+		std::cout << "  |" << static_cast<char>(this->_map->arr_str[i][0]);
+		std::cout << "|" << static_cast<char>(this->_map->arr_str[i][1]);
+		std::cout << "|" << static_cast<char>(this->_map->arr_str[i][2]) << "|\n";
 		i++;
 	}
-	if (!count)
+	std::cout << "  -------\n";
+	cycle++;
+}
+
+void	Game::_check_map()
+{
+	int		c;
+
+	if ((c = this->_check_winer()))
 	{
-		std::cout << "Draw\n";
+		std::cout << "'" << static_cast<char>(c) << "' won!\n";
+		if (c == 'x')
+			this->_player_x->win_phrase();
+		if (c == 'o')
+			this->_player_o->win_phrase();
+		exit (0);
+	}
+	if (this->_check_draw())
+	{
+		std::cout << "Drow!\n";
 		exit(0);
 	}
 }
 
+char	Game::_check_winer()
+{
+	int								i;
+	int								count;
+	char							c;
+	std::list<t_sector>::iterator	it;
+	std::list<t_sector>				line;
 
+	i = 0;
+	while (i < 8)
+	{
+		line = this->_map->line[i];
+		it = line.begin();
+		c = *(it->symbol);
+		count = 0;
+		while (it != line.end())
+		{
+			if (*(it->symbol) != c || *(it->symbol) == '.')
+				break ;
+			count++;
+			it++;
+		}
+		if (count == 3)
+			return (c);
+		i++;
+	}
+	return (0);
+}
 
+int		Game::_check_draw()
+{
+	int		i;
+	std::list<t_sector>::iterator	it;
+	std::list<t_sector>			line;
+
+	i = 0;
+	while (i < 8)
+	{
+		line = this->_map->line[i];
+		it = line.begin();
+		while (it != line.end())
+		{
+			if (*(it->symbol) == '.')
+				return (0) ;
+			it++;
+		}
+		i++;
+	}
+	return (1);
+}

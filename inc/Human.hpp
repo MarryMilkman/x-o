@@ -11,9 +11,11 @@ public:
 	~Human();
 	
 	int						*step() override;
+	void					win_phrase() override;
+	int						is_human() override;
+
 private:
 	int						_check_coord(int const *coord) override;
-	Map						*_map;
 };
 
 #endif

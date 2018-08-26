@@ -18,8 +18,19 @@ Map::Map()
 	this->_create_line();
 }
 
+Map::Map(Map const & ref)
+{
+	*this = ref;
+}
+
 Map::~Map()
 {
+	int	i;
+
+	std::cout << "Map des dell\n";
+	i = -1;
+	while (++i < 3)
+		delete[] this->arr_str[i];
 }
 
 void		Map::_create_line()
@@ -62,4 +73,11 @@ void		Map::_create_line()
 		}
 		i++;
 	}
+}
+
+Map		& Map::operator=(Map const & ref)
+{
+	this->arr_str = ref.arr_str;
+	this->line = ref.line;
+	return (*this);
 }

@@ -13,10 +13,14 @@ class Map
 {
 public:
 	Map();
+	Map(Map const & def_map);
 	~Map();
 
 	std::vector<char *>					arr_str;
 	std::vector<std::list<t_sector>>	line;
+
+	Map		& operator=(Map const & ref);
+
 private:
 	void							_create_line();
 };
