@@ -87,7 +87,8 @@ int			Game::_human_first()
 		}
 		if ((buf[0] == 'x' || buf[0] == 'X') && buf.size() == 1)
 			return (1);
-		else if ((buf[0] == 'o' || buf[0] == 'O') && buf.size() == 1)
+		else if ((buf[0] == 'o' || buf[0] == 'O' || buf[0] == '0')
+					&& buf.size() == 1)
 			return (0);
 		else
 		{
